@@ -521,7 +521,7 @@ class XRef {
             if (objToken && objToken[1]) {
               warn(
                 'indexObjects: Found new "obj" inside of another "obj", ' +
-                  'caused by missing "endobj" -- trying to recover.'
+                'caused by missing "endobj" -- trying to recover.'
               );
               contentLength -= objToken[1].length;
               break;
@@ -793,8 +793,11 @@ class XRef {
     const obj1 = parser.getObj();
     const obj2 = parser.getObj();
     const obj3 = parser.getObj();
-
-    if (obj1 !== num || obj2 !== gen || !(obj3 instanceof Cmd)) {
+    if (obj1 !== num) {
+      warn(`Bad (uncompressed) XRef entry: ${ref}`);
+      return null;
+    }
+    if (obj2 !== gen || !(obj3 instanceof Cmd)) {
       throw new XRefEntryException(`Bad (uncompressed) XRef entry: ${ref}`);
     }
     if (obj3.cmd !== "obj") {
